@@ -14,3 +14,4 @@ screen_height = 800
 screen_size = (screen_width, screen_height)
 taco_monster_speed = 10
 FPS = 30 # Frames per second
+taco_limit = 5 # Limit for how many taco sprites can populate the screen.
