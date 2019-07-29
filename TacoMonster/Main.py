@@ -16,6 +16,8 @@ pygame.init()
 screen = pygame.display.set_mode((screen_size))
 background_image = pygame.image.load("background_images/bg_1.png")
 clock = pygame.time.Clock()
+hot_sauce_timer_start_time = 0
+hot_sauce_time_passed_time = 0
 done = False
 
 # Classes
@@ -61,14 +63,19 @@ class TacoMonster(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
+        self.images_shooter = []
         for i in range(1, 16):
             img = pygame.image.load("sprite_images/taco_monster/taco-" + str(i) + ".png")
             self.images.append(img)
+        for i in range(1, 16):
+            img = pygame.image.load("sprite_images/taco_monster/shooter_taco/taco-" + str(i) + ".png")
+            self.images_shooter.append(img)
         self.image = self.images[0]
         self.rect = self.image.get_rect()
 
         # Attributes
         self.health = 100
+        self.shooter = False
         self.movingLeft = False
         self.movingRight = False
         self.movingUp = False
@@ -98,7 +105,13 @@ class TacoMonster(pygame.sprite.Sprite):
         if self.image_index >= len(self.images):
             self.image_index = 1
 
-        self.image = self.images[self.image_index]
+        if self.shooter:
+            self.image = self.images_shooter[self.image_index]
+
+        else:
+            self.image = self.images[self.image_index]
+
+
     def moveLeft(self):
         if self.rect.left >= 0:
             taco_monster.rect.x -= taco_monster_speed
@@ -115,6 +128,10 @@ class TacoMonster(pygame.sprite.Sprite):
         if self.rect.bottom <= screen_height:
             taco_monster.rect.y += taco_monster_speed
         self.movingDown = False
+
+    def shoot(self):
+        if self.shoot == True:
+            print("Shoot Bullet.")
 
 class Animation(pygame.sprite.Sprite):
     """
@@ -146,6 +163,27 @@ class Animation(pygame.sprite.Sprite):
             self.image = self.images[self.image_index]
         self.image_index += 1
 
+class HotSauce(pygame.sprite.Sprite):
+    """
+        This is the class for the hot sauce sprite. The objects the Taco Monster eats.
+    """
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("sprite_images/hot_sauce/hotsaucebottle.png")
+        self.rect = self.image.get_rect()
+        self.speed = random.randint(hot_sauce_speed_min, hot_sauce_speed_max)
+        self.rect.x = random.randint(screen_width, screen_width + 300)
+        self.rect.y = random.randint(0, screen_height - 90)
+
+    def update_hot_sauce(self):
+        # Move hot sauce bottle.
+        self.rect.x -= self.speed
+
+        # Kill hot suace if it leaves the screen.
+        if self.rect.right < 0:
+            all_sprites.remove(self)
+            hot_sauce_list.remove(self)
+            self.kill()
 
 # Useful functions to make game easier to read.
 def get_player_input():
@@ -185,11 +223,22 @@ def create_new_tacos():
     new_taco.rect.y = random_y
     return new_taco
 
+def create_new_hot_sauce():
+    """
+    This function will create new hotsauce at random location to the right of screen.
+    :return:  none
+    """
+    hot_sauce = HotSauce()
+    all_sprites.add(hot_sauce)
+    hot_sauce_list.add(hot_sauce)
+
 
 # Initialize sprite settings.
 taco_monster = TacoMonster()
 taco_monster.rect.x = 50
 taco_monster.rect.y = 50
+shooter_timer_start = 0
+shooter_timer_passed = 0
 
 list_of_taco_sprites = initialize_taco_sprites(taco_limit)
 
@@ -197,6 +246,7 @@ player_list = pygame.sprite.Group()
 player_list.add(taco_monster)
 
 taco_list = pygame.sprite.Group()
+hot_sauce_list = pygame.sprite.Group()
 animation_list = pygame.sprite.Group()
 
 all_sprites = pygame.sprite.Group()
@@ -206,6 +256,9 @@ for taco in list_of_taco_sprites:
     all_sprites.add(taco)
     taco_list.add(taco)
 
+# spawn a hot sauce for testing.
+create_new_hot_sauce()
+hot_sauce_timer_start_time = pygame.time.get_ticks()
 
 # -------------------Main game loop.-----------------------------
 while not done:
@@ -221,6 +274,15 @@ while not done:
     for taco in taco_list:
         taco.update_taco()
 
+    # Spawn a hot sauce using timer and update current hot sauces on screen.
+    for sauce in hot_sauce_list:
+        sauce.update_hot_sauce()
+
+    hot_sauce_time_passed_time = pygame.time.get_ticks()
+    if hot_sauce_time_passed_time - hot_sauce_timer_start_time > hot_sauce_spawn_time:
+        create_new_hot_sauce()
+        hot_sauce_timer_start_time = pygame.time.get_ticks()
+
     # Create new tacos if the number of tacos on screen is less than the taco limit.
     if len(taco_list) < taco_limit:
         temp_taco = create_new_tacos()
@@ -235,10 +297,26 @@ while not done:
         all_sprites.add(animation)
         taco_monster.score +=1
 
+    # Detect collisions between taco_monster and hot sauce bottles. If collision is detected delete the bottle
+    # and update the taco_monster to have shoot enabled.
+    hot_sauce_hit_list = pygame.sprite.spritecollide(taco_monster, hot_sauce_list, True)
+    shooter_timer_passed = pygame.time.get_ticks()
+    for hit in hot_sauce_hit_list:
+        shooter_timer_passed = pygame.time.get_ticks()
+        shooter_timer_start = pygame.time.get_ticks()
+        taco_monster.shooter = True
+        animation = Animation(pepper_animation, taco_monster.rect.right - 100, taco_monster.rect.y)
+        animation_list.add(animation)
+        all_sprites.add(animation)
+
+    # Check to see if taco_monster has shooting enabled. If it is enabled
+    # this checks the time passes and disables shooter after time limit reached.
+    if taco_monster.shooter and shooter_timer_passed - shooter_timer_start > shooter_time:
+        taco_monster.shooter = False
+
     # Update animations in progress.
     for animation in animation_list:
         animation.update_animation()
-    print("Score: " + str(taco_monster.score))
 
 # Draw the game.
     screen.blit(background_image, [0, 0])
