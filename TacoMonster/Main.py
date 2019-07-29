@@ -116,7 +116,7 @@ class TacoMonster(pygame.sprite.Sprite):
             self.image = self.images[self.image_index]
 
         # Update the taco_monster's score as a text object so that it can be printed to screen.
-        self.score_text_object_and_location = create_text_object("Score: " + str(self.score), (40, 40))
+        self.score_text_object_and_location = create_text_object("Tacos: " + str(self.score), (40, 40))
 
         # Update the taco_monster's health as a text object so that it can be printed to screen.
         self.health_text_object_and_location = create_text_object("Health " + str(self.health), (40, 80))
@@ -139,8 +139,9 @@ class TacoMonster(pygame.sprite.Sprite):
         self.movingDown = False
 
     def shoot(self):
-        if self.shoot == True:
+        if self.shooter == True:
             print("Shoot Bullet.")
+            create_bullet(self.rect.right, self.rect.centery)
 
 class Animation(pygame.sprite.Sprite):
     """
@@ -245,7 +246,7 @@ def get_player_input():
     if pressed[pygame.K_DOWN]: taco_monster.movingDown = True
     if pressed[pygame.K_LEFT]: taco_monster.movingLeft = True
     if pressed[pygame.K_RIGHT]: taco_monster.movingRight = True
-    if pressed[pygame.K_SPACE]: create_bullet(taco_monster.rect.x, taco_monster.rect.y)
+    if pressed[pygame.K_SPACE]: taco_monster.shoot()
 
 def initialize_taco_sprites(taco_limit):
     """
@@ -414,6 +415,15 @@ while not done:
         animation_list.add(animation)
         all_sprites.add(animation)
 
+    # Detect collisions between bullets and sushi. If collision is detected delete the sushi and bullet
+    # then play splat animation.
+    for bullet in bullet_list:
+        bullet_hit_list = pygame.sprite.spritecollide(bullet, sushi_list, True)
+        for hit in bullet_hit_list:
+            animation = Animation(splat_animation, bullet.rect.x, bullet.rect.y)
+            animation_list.add(animation)
+            all_sprites.add(animation)
+
     # Detect collisions between taco_monster and sushi. Delete sushi when collision
     #  detected and decrease taco_monster health. Also, we want to play an animation at the location of collision.
     sushi_hit_list = pygame.sprite.spritecollide(taco_monster, sushi_list, True)
@@ -435,9 +445,9 @@ while not done:
 
 # Draw the game.
     screen.blit(background_image, [0, 0])
-    all_sprites.draw(screen)
     print_text_to_screen(taco_monster.score_text_object_and_location[0], taco_monster.score_text_object_and_location[1])
     print_text_to_screen(taco_monster.health_text_object_and_location[0], taco_monster.health_text_object_and_location[1])
+    all_sprites.draw(screen)
     pygame.display.flip()
     clock.tick(FPS)
 # Exit pygame and system.

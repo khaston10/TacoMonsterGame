@@ -46,3 +46,8 @@ pepper_animation = ["sprite_images/pepper/pepper_1.png", "sprite_images/pepper/p
 yuck_animation = ["sprite_images/yuck/yuck_1.png", "sprite_images/yuck/yuck_2.png", "sprite_images/yuck/yuck_3.png",
                   "sprite_images/yuck/yuck_4.png", "sprite_images/yuck/yuck_5.png", "sprite_images/yuck/yuck_6.png",
                   "sprite_images/yuck/yuck_7.png", "sprite_images/yuck/yuck_8.png", "sprite_images/yuck/yuck_9.png"]
+
+splat_animation = ["sprite_images/splat/splat_1.png", "sprite_images/splat/splat_2.png", "sprite_images/splat/splat_3.png",
+                   "sprite_images/splat/splat_4.png", "sprite_images/splat/splat_5.png", "sprite_images/splat/splat_6.png",
+                   "sprite_images/splat/splat_7.png", "sprite_images/splat/splat_8.png", "sprite_images/splat/splat_9.png",
+                   "sprite_images/splat/splat_10.png", "sprite_images/splat/splat_11.png", "sprite_images/splat/splat_12.png"]

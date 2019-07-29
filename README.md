@@ -18,10 +18,14 @@ Pygame: Use Pip install
 
 ## Authors
 
-* **Kevin Haston** - *Initial work* - [PurpleBooth](https://github.com/khaston10/TacoMonsterGame.git)
+* **Kevin Haston** - *Initial work* - [GitHubRepo](https://github.com/khaston10/TacoMonsterGame.git)
 If you contribute, please update this section and add yourself as an author.
 
 ## Things on the to-do-list
-1. Deal with collisions between bullets and sushi.
-2. Life Icons need to be created and displayed to the screen. The taco_monster has an attribute lives_left.
-3. There is an issue with the rate bullets can be fired. There should at least be .5 seconds between shots.
+1. Life Icons need to be created and displayed to the screen. The taco_monster has an attribute lives_left.
+2. There is an issue with the rate bullets can be fired. There should at least be .5 seconds between shots.
+3. Add splash screen.
+4. Add intro screen.
+5. Add game over screen when taco_monsters lives get to 0.
+6. Add music.
+7. Add sound effects.
