@@ -185,6 +185,29 @@ class HotSauce(pygame.sprite.Sprite):
             hot_sauce_list.remove(self)
             self.kill()
 
+class Bullet(pygame.sprite.Sprite):
+    """
+    This is the class for the taco sprite. The objects the Taco Monster eats.
+    """
+
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = 10
+        self.image = pygame.image.load("sprite_images/bullet/bullet.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update_bullet(self):
+        self.rect.x += self.speed
+
+        # Delete bullet if it leaves the screen.
+        if self.rect.left > screen_width:
+            bullet_list.remove(self)
+            all_sprites.remove(self)
+            bullet.kill()
+
+
 # Useful functions to make game easier to read.
 def get_player_input():
     pressed = pygame.key.get_pressed()
@@ -192,6 +215,7 @@ def get_player_input():
     if pressed[pygame.K_DOWN]: taco_monster.movingDown = True
     if pressed[pygame.K_LEFT]: taco_monster.movingLeft = True
     if pressed[pygame.K_RIGHT]: taco_monster.movingRight = True
+    if pressed[pygame.K_SPACE]: create_bullet(taco_monster.rect.x, taco_monster.rect.y)
 
 def initialize_taco_sprites(taco_limit):
     """
@@ -232,6 +256,18 @@ def create_new_hot_sauce():
     all_sprites.add(hot_sauce)
     hot_sauce_list.add(hot_sauce)
 
+def create_bullet(x, y):
+    """
+    Creates a bullet if the max number of bullets are not on screen.
+    :param x: creates a bullet at this location, x
+    :param y: creates a bullet at this location, x
+    :return: none
+    """
+    if len(bullet_list) < bullet_limit and taco_monster.shooter:
+        bullet = Bullet(x, y)
+        all_sprites.add(bullet)
+        bullet_list.add(bullet)
+
 
 # Initialize sprite settings.
 taco_monster = TacoMonster()
@@ -247,6 +283,7 @@ player_list.add(taco_monster)
 
 taco_list = pygame.sprite.Group()
 hot_sauce_list = pygame.sprite.Group()
+bullet_list = pygame.sprite.Group()
 animation_list = pygame.sprite.Group()
 
 all_sprites = pygame.sprite.Group()
@@ -273,7 +310,8 @@ while not done:
     taco_monster.update_taco()
     for taco in taco_list:
         taco.update_taco()
-
+    for bullet in bullet_list:
+        bullet.update_bullet()
     # Spawn a hot sauce using timer and update current hot sauces on screen.
     for sauce in hot_sauce_list:
         sauce.update_hot_sauce()

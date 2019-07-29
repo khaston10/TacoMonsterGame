@@ -23,6 +23,9 @@ taco_speed_min = 2
 hot_sauce_speed_max = 10
 hot_sauce_speed_min = 2
 hot_sauce_spawn_time = 10000 # 10 seconds
+# Variables for bullets.
+bullet_speed = 20
+bullet_limit = 20
 
 # List of animations.
 yumm_animation = ["sprite_images/yumm/YUMM_1.png", "sprite_images/yumm/YUMM_2.png",
