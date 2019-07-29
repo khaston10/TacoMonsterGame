@@ -75,6 +75,7 @@ class TacoMonster(pygame.sprite.Sprite):
 
         # Attributes
         self.health = 100
+        self.health_text_object_and_location = []
         self.shooter = False
         self.movingLeft = False
         self.movingRight = False
@@ -82,6 +83,7 @@ class TacoMonster(pygame.sprite.Sprite):
         self.movingDown = False
         self.image_index = 0
         self.score = 0
+        self.score_text_object_and_location = []
 
     def getHealth(self):
         return self.health
@@ -99,6 +101,7 @@ class TacoMonster(pygame.sprite.Sprite):
             self.moveLeft()
         elif self.movingRight:
             self.moveRight()
+
         # Deal with sprite image. Update using variable time_between_images.
         self.image_index += 1
 
@@ -111,6 +114,11 @@ class TacoMonster(pygame.sprite.Sprite):
         else:
             self.image = self.images[self.image_index]
 
+        # Update the taco_monster's score as a text object so that it can be printed to screen.
+        self.score_text_object_and_location = create_text_object("Score: " + str(self.score), (40, 40))
+
+        # Update the taco_monster's health as a text object so that it can be printed to screen.
+        self.health_text_object_and_location = create_text_object("Health " + str(self.health), (40, 80))
 
     def moveLeft(self):
         if self.rect.left >= 0:
@@ -207,6 +215,27 @@ class Bullet(pygame.sprite.Sprite):
             all_sprites.remove(self)
             bullet.kill()
 
+class Sushi(pygame.sprite.Sprite):
+    """
+    This is the class for the sushi sprite. The objects the Taco Monster hates.
+    """
+
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = random.randint(sushi_speed_min, sushi_speed_max)
+        self.image = pygame.image.load("sprite_images/sushi/sushi.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(screen_width, screen_width + 300)
+        self.rect.y = random.randint(0 , screen_height -90)
+
+    def update_sushi(self):
+        self.rect.x -= self.speed
+
+        # Delete sushi if it leaves screen.
+        if self.rect.x < 0:
+            all_sprites.remove(self)
+            sushi_list.remove(self)
+            self.kill()
 
 # Useful functions to make game easier to read.
 def get_player_input():
@@ -268,6 +297,36 @@ def create_bullet(x, y):
         all_sprites.add(bullet)
         bullet_list.add(bullet)
 
+def create_sushi():
+    """
+    Creates sushi at random location.
+    """
+    sushi = Sushi()
+    all_sprites.add(sushi)
+    sushi_list.add(sushi)
+
+def create_text_object(message_to_print, location):
+    """
+    This function creates a text object to be printed to screen.
+    :param message_to_print: A string that will be printed to screen.
+    :param location: (x,y) tuple.
+    :return: Returns a text object and a text rect. In a list [text_object, text_rect]
+    """
+    font = pygame.font.Font('freesansbold.ttf', 32)
+    text = font.render(message_to_print, True, White)
+    text_rect = text.get_rect()
+    text_rect = location
+
+    return [text, text_rect]
+
+def print_text_to_screen(text, text_rect):
+    """
+    Prints text to screen at the location text_rect.
+    :param text: A text object created from the function "create_text_object"
+    :param text_rect:  A text object location created from the function "create_text_object"
+    :return: none
+    """
+    screen.blit(text, text_rect)
 
 # Initialize sprite settings.
 taco_monster = TacoMonster()
@@ -283,6 +342,7 @@ player_list.add(taco_monster)
 
 taco_list = pygame.sprite.Group()
 hot_sauce_list = pygame.sprite.Group()
+sushi_list = pygame.sprite.Group()
 bullet_list = pygame.sprite.Group()
 animation_list = pygame.sprite.Group()
 
@@ -316,6 +376,12 @@ while not done:
     for sauce in hot_sauce_list:
         sauce.update_hot_sauce()
 
+    # Spawn sushi if the max number of sushi is not on screen.
+    if len(sushi_list) < man_number_of_sushi:
+        create_sushi()
+    for sushi in sushi_list:
+        sushi.update_sushi()
+
     hot_sauce_time_passed_time = pygame.time.get_ticks()
     if hot_sauce_time_passed_time - hot_sauce_timer_start_time > hot_sauce_spawn_time:
         create_new_hot_sauce()
@@ -347,6 +413,16 @@ while not done:
         animation_list.add(animation)
         all_sprites.add(animation)
 
+    # Detect collisions between taco_monster and sushi. Delete sushi when collision
+    #  detected and decrease taco_monster health. Also, we want to play an animation at the location of collision.
+    sushi_hit_list = pygame.sprite.spritecollide(taco_monster, sushi_list, True)
+    for hit in sushi_hit_list:
+        animation = Animation(yuck_animation, taco_monster.rect.right, taco_monster.rect.top)
+        animation_list.add(animation)
+        all_sprites.add(animation)
+        taco_monster.health -= 10
+
+
     # Check to see if taco_monster has shooting enabled. If it is enabled
     # this checks the time passes and disables shooter after time limit reached.
     if taco_monster.shooter and shooter_timer_passed - shooter_timer_start > shooter_time:
@@ -359,6 +435,8 @@ while not done:
 # Draw the game.
     screen.blit(background_image, [0, 0])
     all_sprites.draw(screen)
+    print_text_to_screen(taco_monster.score_text_object_and_location[0], taco_monster.score_text_object_and_location[1])
+    print_text_to_screen(taco_monster.health_text_object_and_location[0], taco_monster.health_text_object_and_location[1])
     pygame.display.flip()
     clock.tick(FPS)
 # Exit pygame and system.
