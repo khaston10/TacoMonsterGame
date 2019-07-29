@@ -84,6 +84,7 @@ class TacoMonster(pygame.sprite.Sprite):
         self.image_index = 0
         self.score = 0
         self.score_text_object_and_location = []
+        self.lives_left = 3
 
     def getHealth(self):
         return self.health
