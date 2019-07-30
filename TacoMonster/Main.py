@@ -330,6 +330,37 @@ def print_text_to_screen(text, text_rect):
     """
     screen.blit(text, text_rect)
 
+def play_splash_screen():
+    """
+    This function plays the splash screen at the beginning of game.
+    :return: none
+    """
+    splash_screen_timer_start = 0
+    splash_screen_timer_passed = 0
+    splash_screen_animation = []
+    for i in range(1, 70):
+        splash_screen_animation.append("sprite_images/splash_screen/sp_" + str(i) + ".png")
+
+    screen_animation = Animation(splash_screen_animation, screen_width//2 - 200, screen_height//2 - 200)
+    animation_list.add(screen_animation)
+
+    while splash_screen_timer_passed - splash_screen_timer_start < length_of_splash_screen:
+        # Get user inputs.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        # Update Splash Screen.
+        splash_screen_timer_passed = pygame.time.get_ticks()
+        for animation in animation_list:
+            animation.update_animation()
+        # Draw to screen.
+        screen.fill(Black)
+        animation_list.draw(screen)
+        pygame.display.flip()
+        clock.tick(50)
+
+
 # Initialize sprite settings.
 taco_monster = TacoMonster()
 taco_monster.rect.x = 50
@@ -359,7 +390,11 @@ for taco in list_of_taco_sprites:
 create_new_hot_sauce()
 hot_sauce_timer_start_time = pygame.time.get_ticks()
 
+# ----------------Display Splash Screen--------------------------
+play_splash_screen()
+
 # -------------------Main game loop.-----------------------------
+
 while not done:
 # Get user inputs.
     for event in pygame.event.get():
