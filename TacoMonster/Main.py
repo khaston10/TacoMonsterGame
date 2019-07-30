@@ -360,6 +360,28 @@ def play_splash_screen():
         pygame.display.flip()
         clock.tick(50)
 
+def play_intro_screen():
+    """
+    This function plays the intro screen at the beginning of game.
+    :return: none
+    """
+    intro_screen_timer_start = 0
+    intro_screen_timer_passed = 0
+    intro_image = pygame.image.load("intro_images/IntroScreen.png")
+
+    while intro_screen_timer_passed - intro_screen_timer_start < length_of_intro_screen:
+        # Get user inputs.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        # Update intro screen timer Screen.
+        intro_screen_timer_passed = pygame.time.get_ticks()
+
+        # Draw to screen.
+        screen.blit(intro_image, [0, 0])
+        pygame.display.flip()
+        clock.tick(FPS)
 
 # Initialize sprite settings.
 taco_monster = TacoMonster()
@@ -392,6 +414,9 @@ hot_sauce_timer_start_time = pygame.time.get_ticks()
 
 # ----------------Display Splash Screen--------------------------
 play_splash_screen()
+
+# ----------------Display Intro Screen--------------------------
+play_intro_screen()
 
 # -------------------Main game loop.-----------------------------
 

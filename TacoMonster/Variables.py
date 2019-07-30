@@ -13,6 +13,7 @@ screen_width = 1000
 screen_height = 800
 screen_size = (screen_width, screen_height)
 length_of_splash_screen = 3000 # 3 seconds
+length_of_intro_screen = 10000 # 10 seconds
 taco_monster_speed = 20
 shooter_time = 5000 # 5 seconds
 FPS = 30 # Frames per second
