@@ -383,6 +383,7 @@ def play_intro_screen():
         pygame.display.flip()
         clock.tick(FPS)
 
+
 # Initialize sprite settings.
 taco_monster = TacoMonster()
 taco_monster.rect.x = 50
@@ -502,6 +503,26 @@ while not done:
     # Update animations in progress.
     for animation in animation_list:
         animation.update_animation()
+
+    # Check to see if background image needs to be updated, this is based off of tacos_until_new_background.
+    if taco_monster.score == tacos_until_new_background and level_number != 1:
+        level_number = 1
+        background_image = pygame.image.load(background_images[1])
+    elif taco_monster.score == 2 * tacos_until_new_background and level_number != 2:
+        level_number = 2
+        background_image = pygame.image.load(background_images[2])
+    elif taco_monster.score == 3 * tacos_until_new_background and level_number != 3:
+        level_number = 3
+        background_image = pygame.image.load(background_images[3])
+    elif taco_monster.score == 4 * tacos_until_new_background and level_number != 4:
+        level_number = 4
+        background_image = pygame.image.load(background_images[4])
+    elif taco_monster.score == 5 * tacos_until_new_background and level_number != 5:
+        level_number = 5
+        background_image = pygame.image.load(background_images[5])
+    elif taco_monster.score == 6 * tacos_until_new_background:
+        level_number = 5
+        print("congratulations. Need End of game screen.")
 
 # Draw the game.
     screen.blit(background_image, [0, 0])

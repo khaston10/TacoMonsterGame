@@ -28,4 +28,4 @@ If you contribute, please update this section and add yourself as an author.
 4. Add music.
 5. Add sound effects.
 6. Increase level of diffuculty with time. 
-7. Change the backgound image every 500? tacos(score).
+7. Add a congratulations screen when the player complete the game.
