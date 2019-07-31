@@ -16,6 +16,7 @@ pygame.init()
 screen = pygame.display.set_mode((screen_size))
 background_image = pygame.image.load("background_images/bg_1.png")
 game_over_image = pygame.image.load(game_over_image_name[0])
+game_won_image = pygame.image.load(game_won_image_name[0])
 clock = pygame.time.Clock()
 done = False
 
@@ -408,6 +409,9 @@ def update_level_settings(level):
     global background_images
     global level_number
 
+    # Delete sprites from game.
+    destroy_sprites(taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
+
     taco_limit = level * 2
     max_number_of_sushi = level * 2
     hot_sauce_limit = level * 2
@@ -627,7 +631,8 @@ while not done:
         update_level_settings(5)
 
     elif taco_monster.score == 6 * tacos_until_new_background and level_number != 6:
-        update_level_settings(6)
+        game_won_load = True
+        done = True
 
 
     # Draw the game.
@@ -652,7 +657,7 @@ while game_over_load:
 
     # Delete sprites from game.
 
-    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation = True)
+    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation = True, bullet = True)
 
     game_over_load = False
     game_over = True
@@ -667,6 +672,43 @@ while game_over_load:
 
         # Draw the game.
         screen.blit(game_over_image, [0, 0])
+        print_text_to_screen(final_taco_text_object_and_location[0], final_taco_text_object_and_location[1])
+        print_text_to_screen(final_sushi_text_object_and_location[0], final_sushi_text_object_and_location[1])
+        print_text_to_screen(final_score_text_object_and_location[0], final_score_text_object_and_location[1])
+
+        all_sprites.draw(screen)
+        pygame.display.flip()
+        clock.tick(FPS)
+
+while game_won_load:
+
+    # Load end of game texts.
+    final_taco_text_object_and_location = create_text_object\
+        ("TACO SCORE: " + str(taco_monster.score), [screen_width // 2 - 120, screen_height // 2 - 60])
+
+    final_sushi_text_object_and_location = create_text_object\
+        ("SUSHI SCORE: " + str(taco_monster.sushi_killed), [screen_width // 2 - 120, screen_height // 2])
+
+    final_score_text_object_and_location = create_text_object ("FINAL SCORE: " +
+    str(taco_monster.sushi_killed + taco_monster.score), [screen_width // 2 - 120, screen_height - 100])
+
+    # Delete sprites from game.
+
+    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation = True, bullet = True)
+
+    game_won_load = False
+    game_won = True
+
+    while game_won:
+
+        # Get user inputs.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_won = False
+
+
+        # Draw the game.
+        screen.blit(game_won_image, [0, 0])
         print_text_to_screen(final_taco_text_object_and_location[0], final_taco_text_object_and_location[1])
         print_text_to_screen(final_sushi_text_object_and_location[0], final_sushi_text_object_and_location[1])
         print_text_to_screen(final_score_text_object_and_location[0], final_score_text_object_and_location[1])

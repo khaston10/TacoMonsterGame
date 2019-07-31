@@ -11,7 +11,7 @@ White = (255, 255, 255)
 # Variables for game.
 screen_width = 1000
 screen_height = 800
-FPS = 20 # Frames per second
+FPS = 25 # Frames per second
 screen_size = (screen_width, screen_height)
 length_of_splash_screen = 3000 # 3 seconds
 length_of_intro_screen = 5000 # 5 seconds
@@ -19,6 +19,8 @@ length_of_game_over_screen = 5000 # 5 seconds
 level_number = 0  # Used to streamline the background update.
 game_over = False
 game_over_load = False
+game_won_load = False
+game_won = False
 
 # Variables for Taco Monster.
 taco_monster_speed = 20
@@ -30,7 +32,7 @@ bullet_limit = 5
 
 # Variables for Tacos.
 taco_limit = 2  # Limit for how many taco sprites can populate the screen.
-tacos_until_new_background = 5  # Required tacos to eat to update the background.
+tacos_until_new_background = 2  # Required tacos to eat to update the background.
 taco_speed_max = 10
 taco_speed_min = 2
 
@@ -74,3 +76,4 @@ background_images = ["background_images/bg_1.png", "background_images/bg_2.png",
                      "background_images/bg_5.png", "background_images/bg_6.png", "game_over_screen/Game_Over.png"]
 
 game_over_image_name = ["game_over_screen/Game_Over.png"]
+game_won_image_name = ["game_over_screen/Congratulations.png"]
