@@ -22,8 +22,7 @@ Pygame: Use Pip install
 If you contribute, please update this section and add yourself as an author.
 
 ## Things on the to-do-list
-1. Life Icons need to be created and displayed to the screen. The taco_monster has an attribute lives_left.
-2. Add game over screen when taco_monsters lives get to 0.
-3. Add music.
-4. Add sound effects.
-5. Add a congratulations screen when the player complete the game.
+1. Life Icons need to be created and displayed to the screen. The taco_monster has an attribute lives_left. 
+2. Add music.
+3. Add sound effects.
+4. Add a congratulations screen when the player complete the game.

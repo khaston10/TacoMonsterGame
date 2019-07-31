@@ -11,11 +11,14 @@ White = (255, 255, 255)
 # Variables for game.
 screen_width = 1000
 screen_height = 800
-FPS = 30 # Frames per second
+FPS = 20 # Frames per second
 screen_size = (screen_width, screen_height)
 length_of_splash_screen = 3000 # 3 seconds
 length_of_intro_screen = 5000 # 5 seconds
+length_of_game_over_screen = 5000 # 5 seconds
 level_number = 0  # Used to streamline the background update.
+game_over = False
+game_over_load = False
 
 # Variables for Taco Monster.
 taco_monster_speed = 20
@@ -27,7 +30,7 @@ bullet_limit = 5
 
 # Variables for Tacos.
 taco_limit = 2  # Limit for how many taco sprites can populate the screen.
-tacos_until_new_background = 10  # Required tacos to eat to update the background.
+tacos_until_new_background = 5  # Required tacos to eat to update the background.
 taco_speed_max = 10
 taco_speed_min = 2
 
@@ -40,6 +43,7 @@ hot_sauce_limit = 1
 max_number_of_sushi = 0
 sushi_speed_max = 20
 sushi_speed_min = 2
+sushi_damage = 50
 
 
 # List of animations.
@@ -67,4 +71,6 @@ splat_animation = ["sprite_images/splat/splat_1.png", "sprite_images/splat/splat
 # List of background images.
 background_images = ["background_images/bg_1.png", "background_images/bg_2.png",
                      "background_images/bg_3.png", "background_images/bg_4.png",
-                     "background_images/bg_5.png", "background_images/bg_6.png"]
+                     "background_images/bg_5.png", "background_images/bg_6.png", "game_over_screen/Game_Over.png"]
+
+game_over_image_name = ["game_over_screen/Game_Over.png"]

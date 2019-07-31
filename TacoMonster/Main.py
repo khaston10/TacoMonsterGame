@@ -15,6 +15,7 @@ Yumm animation by: Kevin Haston
 pygame.init()
 screen = pygame.display.set_mode((screen_size))
 background_image = pygame.image.load("background_images/bg_1.png")
+game_over_image = pygame.image.load(game_over_image_name[0])
 clock = pygame.time.Clock()
 done = False
 
@@ -81,6 +82,7 @@ class TacoMonster(pygame.sprite.Sprite):
         self.movingDown = False
         self.image_index = 0
         self.score = 0
+        self.sushi_killed = 0
         self.score_text_object_and_location = []
         self.lives_left = 3
 
@@ -89,6 +91,9 @@ class TacoMonster(pygame.sprite.Sprite):
 
     def getScore(self):
         return self.score
+
+    def getSushiKilled(self):
+        return self.sushi_killed
 
     def update_taco(self):
         # Deal with movement.
@@ -245,8 +250,6 @@ def get_player_input():
     if pressed[pygame.K_LEFT]: taco_monster.movingLeft = True
     if pressed[pygame.K_RIGHT]: taco_monster.movingRight = True
 
-
-
 def initialize_taco_sprites(taco_limit):
     """
     This function initializes taco sprites, an instance of the Taco class.
@@ -382,6 +385,16 @@ def play_intro_screen():
         pygame.display.flip()
         clock.tick(FPS)
 
+def play_game_over_screen():
+    """
+    This function kills all sprites on screen, plays the game over screen, and displays player score. Then ends game.
+    :return:None
+    """
+    global all_sprites
+
+    for sprite in all_sprites:
+        sprite.kill()
+
 def update_level_settings(level):
     """
     Call this function in the update section of the game loop to increase level difficulty.
@@ -445,6 +458,52 @@ def initialize_sprite_settings():
         all_sprites.add(taco)
         taco_list.add(taco)
 
+def destroy_sprites(player=False, taco=False, hot_sauce=False, sushi=False, animation=False, bullet = False):
+    """
+    This function deletes sprites from the appropriate list when the sprite name is set to True.
+    :param player: When set to True, player sprite is deleted.
+    :param taco: When set to True, taco sprites are deleted.
+    :param hot_sauce: When set to True, hot_sauce sprites are deleted.
+    :param sushi: When set to True, sushi sprites are deleted.
+    :return: None
+    """""
+    global player_list
+    global taco_list
+    global hot_sauce_list
+    global sushi_list
+    global animation_list
+    global bullet_list
+
+    if bullet:
+        if len(bullet_list) > 0:
+            for bullet in bullet_list:
+                bullet.kill()
+
+    if hot_sauce:
+       if len(hot_sauce_list) > 0:
+           for hot_sauce in hot_sauce_list:
+               hot_sauce.kill()
+
+    if taco:
+       if len(taco_list) > 0:
+           for taco in taco_list:
+               taco.kill()
+
+    if player:
+       if len(player_list) > 0:
+           for player in player_list:
+               player.kill()
+
+    if sushi:
+        if len(sushi_list) > 0:
+            for sushi in sushi_list:
+                sushi.kill()
+
+    if animation:
+        if len(animation_list) > 0:
+            for animation in animation_list:
+                animation.kill()
+
 # Initialize sprite settings.
 initialize_sprite_settings()
 
@@ -457,6 +516,8 @@ play_intro_screen()
 # -------------------Main game loop.-----------------------------
 
 while not done:
+    # Print Actual FPS for test purposes.
+    print(clock.get_fps())
     # Get user inputs.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -519,7 +580,9 @@ while not done:
     # then play splat animation.
     for bullet in bullet_list:
         bullet_hit_list = pygame.sprite.spritecollide(bullet, sushi_list, True)
+
         for hit in bullet_hit_list:
+            taco_monster.sushi_killed += 1
             animation = Animation(splat_animation, bullet.rect.x, bullet.rect.y)
             animation_list.add(animation)
             all_sprites.add(animation)
@@ -531,7 +594,7 @@ while not done:
         animation = Animation(yuck_animation, taco_monster.rect.right, taco_monster.rect.top)
         animation_list.add(animation)
         all_sprites.add(animation)
-        taco_monster.health -= 10
+        taco_monster.health -= sushi_damage
 
 
     # Check to see if taco_monster has shooting enabled. If it is enabled
@@ -544,6 +607,10 @@ while not done:
         animation.update_animation()
 
     # Check to see if background image needs to be updated, this is based off of tacos_until_new_background.
+    if taco_monster.health <= 0:
+        game_over_load = True
+        done = True
+
     if taco_monster.score == tacos_until_new_background and level_number != 1:
         update_level_settings(1)
 
@@ -560,16 +627,54 @@ while not done:
         update_level_settings(5)
 
     elif taco_monster.score == 6 * tacos_until_new_background and level_number != 6:
-        print("Need to show end of game congratulations screen.")
+        update_level_settings(6)
 
 
-# Draw the game.
+    # Draw the game.
     screen.blit(background_image, [0, 0])
     print_text_to_screen(taco_monster.score_text_object_and_location[0], taco_monster.score_text_object_and_location[1])
     print_text_to_screen(taco_monster.health_text_object_and_location[0], taco_monster.health_text_object_and_location[1])
     all_sprites.draw(screen)
     pygame.display.flip()
     clock.tick(FPS)
+
+while game_over_load:
+
+    # Load end of game texts.
+    final_taco_text_object_and_location = create_text_object\
+        ("TACO SCORE: " + str(taco_monster.score), [screen_width // 2 - 120, screen_height // 2 - 60])
+
+    final_sushi_text_object_and_location = create_text_object\
+        ("SUSHI SCORE: " + str(taco_monster.sushi_killed), [screen_width // 2 - 120, screen_height // 2])
+
+    final_score_text_object_and_location = create_text_object ("FINAL SCORE: " +
+    str(taco_monster.sushi_killed + taco_monster.score), [screen_width // 2 - 120, screen_height - 100])
+
+    # Delete sprites from game.
+
+    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation = True)
+
+    game_over_load = False
+    game_over = True
+
+    while game_over:
+
+        # Get user inputs.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_over = False
+
+
+        # Draw the game.
+        screen.blit(game_over_image, [0, 0])
+        print_text_to_screen(final_taco_text_object_and_location[0], final_taco_text_object_and_location[1])
+        print_text_to_screen(final_sushi_text_object_and_location[0], final_sushi_text_object_and_location[1])
+        print_text_to_screen(final_score_text_object_and_location[0], final_score_text_object_and_location[1])
+
+        all_sprites.draw(screen)
+        pygame.display.flip()
+        clock.tick(FPS)
+
 # Exit pygame and system.
 pygame.quit()
 sys.exit()
