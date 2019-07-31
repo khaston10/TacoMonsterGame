@@ -244,7 +244,8 @@ def get_player_input():
     if pressed[pygame.K_DOWN]: taco_monster.movingDown = True
     if pressed[pygame.K_LEFT]: taco_monster.movingLeft = True
     if pressed[pygame.K_RIGHT]: taco_monster.movingRight = True
-    if pressed[pygame.K_SPACE]: taco_monster.shoot()
+
+
 
 def initialize_taco_sprites(taco_limit):
     """
@@ -460,6 +461,10 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                taco_monster.shoot()
     get_player_input()
 
 

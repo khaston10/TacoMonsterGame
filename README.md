@@ -23,8 +23,7 @@ If you contribute, please update this section and add yourself as an author.
 
 ## Things on the to-do-list
 1. Life Icons need to be created and displayed to the screen. The taco_monster has an attribute lives_left.
-2. There is an issue with the rate bullets can be fired. There should at least be .5 seconds between shots.
-3. Add game over screen when taco_monsters lives get to 0.
-4. Add music.
-5. Add sound effects.
-6. Add a congratulations screen when the player complete the game.
+2. Add game over screen when taco_monsters lives get to 0.
+3. Add music.
+4. Add sound effects.
+5. Add a congratulations screen when the player complete the game.

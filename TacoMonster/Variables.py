@@ -23,7 +23,7 @@ shooter_time = 5000 # 5 seconds
 
 # Variables for bullets.
 bullet_speed = 20
-bullet_limit = 20
+bullet_limit = 5
 
 # Variables for Tacos.
 taco_limit = 2  # Limit for how many taco sprites can populate the screen.
