@@ -16,8 +16,6 @@ pygame.init()
 screen = pygame.display.set_mode((screen_size))
 background_image = pygame.image.load("background_images/bg_1.png")
 clock = pygame.time.Clock()
-hot_sauce_timer_start_time = 0
-hot_sauce_time_passed_time = 0
 done = False
 
 # Classes
@@ -182,14 +180,14 @@ class HotSauce(pygame.sprite.Sprite):
         self.image = pygame.image.load("sprite_images/hot_sauce/hotsaucebottle.png")
         self.rect = self.image.get_rect()
         self.speed = random.randint(hot_sauce_speed_min, hot_sauce_speed_max)
-        self.rect.x = random.randint(screen_width, screen_width + 300)
+        self.rect.x = random.randint(screen_width, screen_width + 3000)
         self.rect.y = random.randint(0, screen_height - 90)
 
     def update_hot_sauce(self):
         # Move hot sauce bottle.
         self.rect.x -= self.speed
 
-        # Kill hot suace if it leaves the screen.
+        # Kill hot sauce if it leaves the screen.
         if self.rect.right < 0:
             all_sprites.remove(self)
             hot_sauce_list.remove(self)
@@ -281,7 +279,7 @@ def create_new_tacos():
 def create_new_hot_sauce():
     """
     This function will create new hotsauce at random location to the right of screen.
-    :return:  none
+    :return: none
     """
     hot_sauce = HotSauce()
     all_sprites.add(hot_sauce)
@@ -383,35 +381,71 @@ def play_intro_screen():
         pygame.display.flip()
         clock.tick(FPS)
 
+def update_level_settings(level):
+    """
+    Call this function in the update section of the game loop to increase level difficulty.
+    :param level: level is an integer
+    :return:
+    """
+    global taco_limit
+    global max_number_of_sushi
+    global hot_sauce_limit
+    global background_image
+    global background_images
+    global level_number
+
+    taco_limit = level * 2
+    max_number_of_sushi = level * 2
+    hot_sauce_limit = level * 2
+    level_number = level
+    background_image = pygame.image.load(background_images[level_number])
+
+def initialize_sprite_settings():
+    """
+    This function is only used to make the code more streamlined.
+    :return: None
+    """
+    global taco_monster
+    global screen_height
+    global shooter_timer_start
+    global shooter_timer_passed
+    global player_list
+    global taco_list
+    global hot_sauce_hit_list
+    global sushi_hit_list
+    global animation_list
+    global all_sprites
+    global list_of_taco_sprites
+    global bullet_list
+    global hot_sauce_list
+    global sushi_list
+
+    taco_monster = TacoMonster()
+    taco_monster.rect.x = 50
+    taco_monster.rect.y = screen_height // 2
+    shooter_timer_start = 0
+    shooter_timer_passed = 0
+
+    player_list = pygame.sprite.Group()
+    player_list.add(taco_monster)
+
+    taco_list = pygame.sprite.Group()
+    hot_sauce_list = pygame.sprite.Group()
+    sushi_list = pygame.sprite.Group()
+    bullet_list = pygame.sprite.Group()
+    animation_list = pygame.sprite.Group()
+
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(taco_monster)
+
+    list_of_taco_sprites = initialize_taco_sprites(taco_limit)
+
+    for taco in list_of_taco_sprites:
+        all_sprites.add(taco)
+        taco_list.add(taco)
 
 # Initialize sprite settings.
-taco_monster = TacoMonster()
-taco_monster.rect.x = 50
-taco_monster.rect.y = 50
-shooter_timer_start = 0
-shooter_timer_passed = 0
-
-list_of_taco_sprites = initialize_taco_sprites(taco_limit)
-
-player_list = pygame.sprite.Group()
-player_list.add(taco_monster)
-
-taco_list = pygame.sprite.Group()
-hot_sauce_list = pygame.sprite.Group()
-sushi_list = pygame.sprite.Group()
-bullet_list = pygame.sprite.Group()
-animation_list = pygame.sprite.Group()
-
-all_sprites = pygame.sprite.Group()
-all_sprites.add(taco_monster)
-
-for taco in list_of_taco_sprites:
-    all_sprites.add(taco)
-    taco_list.add(taco)
-
-# spawn a hot sauce for testing.
-create_new_hot_sauce()
-hot_sauce_timer_start_time = pygame.time.get_ticks()
+initialize_sprite_settings()
 
 # ----------------Display Splash Screen--------------------------
 play_splash_screen()
@@ -422,33 +456,33 @@ play_intro_screen()
 # -------------------Main game loop.-----------------------------
 
 while not done:
-# Get user inputs.
+    # Get user inputs.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
     get_player_input()
 
 
-# Update game state.
+    # Update game state.
     taco_monster.update_taco()
     for taco in taco_list:
         taco.update_taco()
     for bullet in bullet_list:
         bullet.update_bullet()
-    # Spawn a hot sauce using timer and update current hot sauces on screen.
+
+    # Create new hot sauce if the number of hot sauces on screen is less than the hot_sauce_limit.
     for sauce in hot_sauce_list:
         sauce.update_hot_sauce()
+    if len(hot_sauce_list) < hot_sauce_limit:
+        create_new_hot_sauce()
 
     # Spawn sushi if the max number of sushi is not on screen.
-    if len(sushi_list) < man_number_of_sushi:
+    if len(sushi_list) < max_number_of_sushi:
         create_sushi()
     for sushi in sushi_list:
         sushi.update_sushi()
 
-    hot_sauce_time_passed_time = pygame.time.get_ticks()
-    if hot_sauce_time_passed_time - hot_sauce_timer_start_time > hot_sauce_spawn_time:
-        create_new_hot_sauce()
-        hot_sauce_timer_start_time = pygame.time.get_ticks()
+
 
     # Create new tacos if the number of tacos on screen is less than the taco limit.
     if len(taco_list) < taco_limit:
@@ -506,23 +540,23 @@ while not done:
 
     # Check to see if background image needs to be updated, this is based off of tacos_until_new_background.
     if taco_monster.score == tacos_until_new_background and level_number != 1:
-        level_number = 1
-        background_image = pygame.image.load(background_images[1])
+        update_level_settings(1)
+
     elif taco_monster.score == 2 * tacos_until_new_background and level_number != 2:
-        level_number = 2
-        background_image = pygame.image.load(background_images[2])
+        update_level_settings(2)
+
     elif taco_monster.score == 3 * tacos_until_new_background and level_number != 3:
-        level_number = 3
-        background_image = pygame.image.load(background_images[3])
+        update_level_settings(3)
+
     elif taco_monster.score == 4 * tacos_until_new_background and level_number != 4:
-        level_number = 4
-        background_image = pygame.image.load(background_images[4])
+        update_level_settings(4)
+
     elif taco_monster.score == 5 * tacos_until_new_background and level_number != 5:
-        level_number = 5
-        background_image = pygame.image.load(background_images[5])
-    elif taco_monster.score == 6 * tacos_until_new_background:
-        level_number = 5
-        print("congratulations. Need End of game screen.")
+        update_level_settings(5)
+
+    elif taco_monster.score == 6 * tacos_until_new_background and level_number != 6:
+        print("Need to show end of game congratulations screen.")
+
 
 # Draw the game.
     screen.blit(background_image, [0, 0])

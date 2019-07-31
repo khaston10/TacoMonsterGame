@@ -11,29 +11,37 @@ White = (255, 255, 255)
 # Variables for game.
 screen_width = 1000
 screen_height = 800
+FPS = 30 # Frames per second
 screen_size = (screen_width, screen_height)
 length_of_splash_screen = 3000 # 3 seconds
 length_of_intro_screen = 5000 # 5 seconds
+level_number = 0  # Used to streamline the background update.
+
+# Variables for Taco Monster.
 taco_monster_speed = 20
 shooter_time = 5000 # 5 seconds
-FPS = 30 # Frames per second
-taco_limit = 5 # Limit for how many taco sprites can populate the screen.
-tacos_until_new_background = 10 # Required tacos to eat to update the background.
-level_number = 0 # Used to streamline the background update.
-# Setting speeds for tacos.
-taco_speed_max = 10
-taco_speed_min = 2
-# Setting for hot_sauce speed and spawn rate.
-hot_sauce_speed_max = 10
-hot_sauce_speed_min = 2
-hot_sauce_spawn_time = 10000 # 10 seconds
+
 # Variables for bullets.
 bullet_speed = 20
 bullet_limit = 20
+
+# Variables for Tacos.
+taco_limit = 2  # Limit for how many taco sprites can populate the screen.
+tacos_until_new_background = 10  # Required tacos to eat to update the background.
+taco_speed_max = 10
+taco_speed_min = 2
+
+# Setting for hot_sauce.
+hot_sauce_speed_max = 10
+hot_sauce_speed_min = 2
+hot_sauce_limit = 1
+
 # Variables for sushi.
-man_number_of_sushi = 3
+max_number_of_sushi = 0
 sushi_speed_max = 20
 sushi_speed_min = 2
+
+
 # List of animations.
 yumm_animation = ["sprite_images/yumm/YUMM_1.png", "sprite_images/yumm/YUMM_2.png",
                   "sprite_images/yumm/YUMM_3.png", "sprite_images/yumm/YUMM_4.png",

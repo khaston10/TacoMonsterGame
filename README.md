@@ -27,5 +27,4 @@ If you contribute, please update this section and add yourself as an author.
 3. Add game over screen when taco_monsters lives get to 0.
 4. Add music.
 5. Add sound effects.
-6. Increase level of diffuculty with time. 
-7. Add a congratulations screen when the player complete the game.
+6. Add a congratulations screen when the player complete the game.
