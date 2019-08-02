@@ -6,9 +6,10 @@ from Variables import *
 """
 Artwork credits:
 TacoMonster art by: (http://bevouliin.com)
-Backgrounds bg_1 by: Sauer2
-Taco art by: Kevin Haston
-Yumm animation by: Kevin Haston
+Backgrounds: Sauer2, Satur9, leyren, Daniel Gregory Benoy from http://opengameart.org
+All other art by: Kevin Haston
+Music: Zefz from http://opengameart.org
+Sound effects: from http://opengameart.org
 """
 
 # Initialize pygame settings.
@@ -16,9 +17,22 @@ pygame.init()
 screen = pygame.display.set_mode((screen_size))
 background_image = pygame.image.load("background_images/bg_1.png")
 game_over_image = pygame.image.load(game_over_image_name[0])
-game_won_image = pygame.image.load(game_won_image_name[0])
+game_won_image = pygame.image.load("game_over_screen/game_won.png")
+high_score_image = pygame.image.load("Intro_images/IntroScreen.png")
+#new_high_score_image = pygame.image.load("Intro_images/NewHighScore.png")
+game_over_and_high_score_image = pygame.image.load("game_over_screen/Congratulations.png")
+new_high_score_congratulations_image = pygame.image.load("Intro_images/NewHighScoreCongratulations.png")
+outline_image = pygame.image.load("intro_images/OutLine.png")
 clock = pygame.time.Clock()
 done = False
+
+# Initialize sound and music..
+splash_screen_sound = pygame.mixer.Sound('sounds/Wav/Hit_00.wav')
+hit_taco_sound = pygame.mixer.Sound('sounds/Wav/Hit_00.wav')
+hit_hot_sauce_sound = pygame.mixer.Sound('sounds/Wav/Pickup_00.wav')
+hit_sushi_sound = pygame.mixer.Sound('sounds/Wav/Hit_03.wav')
+shoot_sound = pygame.mixer.Sound('sounds/Wav/Shoot_01.wav')
+pygame.mixer.music.load("sounds/music/ScatterNoise1.mp3")
 
 # Classes
 class Taco(pygame.sprite.Sprite):
@@ -130,7 +144,7 @@ class TacoMonster(pygame.sprite.Sprite):
             taco_monster.rect.x -= taco_monster_speed
         self.movingLeft = False
     def moveRight(self):
-        if self.rect.right < 300:
+        if self.rect.right < screen_width:
             taco_monster.rect.x += taco_monster_speed
         self.movingRight = False
     def moveUp(self):
@@ -144,7 +158,7 @@ class TacoMonster(pygame.sprite.Sprite):
 
     def shoot(self):
         if self.shooter == True:
-            print("Shoot Bullet.")
+            shoot_sound.play()
             create_bullet(self.rect.right, self.rect.centery)
 
 class Animation(pygame.sprite.Sprite):
@@ -310,15 +324,15 @@ def create_sushi():
     all_sprites.add(sushi)
     sushi_list.add(sushi)
 
-def create_text_object(message_to_print, location):
+def create_text_object(message_to_print, location, color=White, font_size=32):
     """
     This function creates a text object to be printed to screen.
     :param message_to_print: A string that will be printed to screen.
     :param location: (x,y) tuple.
     :return: Returns a text object and a text rect. In a list [text_object, text_rect]
     """
-    font = pygame.font.Font('freesansbold.ttf', 32)
-    text = font.render(message_to_print, True, White)
+    font = pygame.font.Font('freesansbold.ttf', font_size)
+    text = font.render(message_to_print, True, color)
     text_rect = text.get_rect()
     text_rect = location
 
@@ -338,6 +352,7 @@ def play_splash_screen():
     This function plays the splash screen at the beginning of game.
     :return: none
     """
+    splash_screen_sound.play()
     splash_screen_timer_start = 0
     splash_screen_timer_passed = 0
     splash_screen_animation = []
@@ -410,7 +425,7 @@ def update_level_settings(level):
     global level_number
 
     # Delete sprites from game.
-    destroy_sprites(taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
+    destroy_sprites(taco=True, hot_sauce=True, sushi=True, bullet=False)
 
     taco_limit = level * 2
     max_number_of_sushi = level * 2
@@ -439,8 +454,8 @@ def initialize_sprite_settings():
     global sushi_list
 
     taco_monster = TacoMonster()
-    taco_monster.rect.x = 50
-    taco_monster.rect.y = screen_height // 2
+    taco_monster.rect.x = 60
+    taco_monster.rect.y = screen_height // 2 -10
     shooter_timer_start = 0
     shooter_timer_passed = 0
 
@@ -508,6 +523,102 @@ def destroy_sprites(player=False, taco=False, hot_sauce=False, sushi=False, anim
             for animation in animation_list:
                 animation.kill()
 
+def update_FPS_min_and_max():
+    """
+    This function records the min and max frames per second that actually ran during game play, so the user can see
+    them at the end of the game.
+    :return: None
+    """
+    global Min_FPS
+    global Max_FPS
+
+    current_fps = int(clock.get_fps())
+    if Min_FPS > current_fps:
+        Min_FPS = current_fps
+    if Max_FPS < current_fps:
+        Max_FPS = current_fps
+
+def check_highscore(score_int, player_name):
+    """
+    This function checks to see if the player has achieved high score.
+    If his score was reached it is saved in the txt file.
+    :param score: integer, players score.
+    :return: True if high score is reached.
+    """
+    score_string = ""
+    if len(str(score_int)) == 1:
+        score_string = "00" + str(score_int)
+    if len(str(score_int)) == 2:
+        score_string = "0" + str(score_int)
+
+
+    f = open("high_score.txt", "r")
+    line_1 = f.readlines(1)
+    line_2 = f.readlines(2)
+    line_3 = f.readlines(3)
+    f.close()
+
+    new_high_score = False
+    name_1 = line_1[0][0:3]
+    score_1 = line_1[0][4:7]
+    name_2 = line_2[0][0:3]
+    score_2 = line_2[0][4:7]
+    name_3 = line_3[0][0:3]
+    score_3 = line_3[0][4:7]
+
+    if score_int >= int(score_1):
+        new_high_score = True
+        score_3 = score_2
+        score_2 = score_1
+        score_1 = str(score_string)
+        name_3 = name_2
+        name_2 = name_1
+        name_1 = player_name
+    elif score_int >= int(score_2):
+        new_high_score = True
+        score_3 = score_2
+        score_2 = str(score_string)
+        name_3 = name_2
+        name_2 = player_name
+    elif score_int >= int(score_3):
+        new_high_score = True
+        score_3 = str(score_string)
+        name_3 = player_name
+
+    f = open("high_score.txt", "w")
+    f.write(name_1 + " " + score_1 + "\n")
+    f.write(name_2 + " " + score_2 + "\n")
+    f.write(name_3 + " " + score_3 + "\n")
+    f.close()
+
+    return new_high_score
+
+def get_highscore(number):
+    """
+    This function retrieves one of the top three high scores, based upon the number input.
+    :param number: integer, which score to retrieve, i.e. number = 1 retrieves the top score.
+    :return: list ["nam", "scr"]
+    """
+    f = open("high_score.txt", "r")
+    line_1 = f.readlines(1)
+    line_2 = f.readlines(2)
+    line_3 = f.readlines(3)
+    f.close()
+
+    name_1 = line_1[0][0:3]
+    score_1 = line_1[0][4:7]
+    name_2 = line_2[0][0:3]
+    score_2 = line_2[0][4:7]
+    name_3 = line_3[0][0:3]
+    score_3 = line_3[0][4:7]
+
+    if number == 1:
+        return [name_1, score_1]
+    elif number == 2:
+        return [name_2, score_2]
+    elif number == 3:
+        return [name_3, score_3]
+
 # Initialize sprite settings.
 initialize_sprite_settings()
 
@@ -515,13 +626,111 @@ initialize_sprite_settings()
 play_splash_screen()
 
 # ----------------Display Intro Screen--------------------------
-play_intro_screen()
+while high_score_load:
+
+    # Load high score text objects.
+    score_1 = get_highscore(1)
+    score_2 = get_highscore(2)
+    score_3 = get_highscore(3)
+
+    high_score_directions_text_object_and_location = create_text_object\
+        ("ENTER NAME: ", [screen_width // 2 - 140, screen_height - 150])
+
+    player_name_text_object_and_location = create_text_object \
+        (player_name, [screen_width // 2 + 100, screen_height - 150])
+
+    high_score_text_object_and_location = create_text_object("HIGH SCORE LIST: ",
+                                                             [screen_width // 2 - 130, screen_height - 465])
+
+    high_score_1_text_object_and_location = create_text_object(score_1[0] + " " + score_1[1],
+                                                               [screen_width // 2 - 50, screen_height - 330])
+    high_score_2_text_object_and_location = create_text_object(score_2[0] + " " + score_2[1],
+                                                               [screen_width // 2 - 50, screen_height - 260])
+    high_score_3_text_object_and_location = create_text_object(score_3[0] + " " + score_3[1],
+                                                               [screen_width // 2 - 50, screen_height - 200])
+    # Set timers to deal with blinking final score.
+    time_start = 0
+    time_passed = 0
+    display_player_name = False
+
+    pygame.mixer.music.play(-1)
+
+    # Delete sprites from game.
+
+    destroy_sprites(player=False, taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
+
+    high_score_load = False
+    high_score = True
+
+    while high_score:
+
+        # Get user inputs.
+
+        event = pygame.event.poll()
+        keys = pygame.key.get_pressed()
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        if event.type == pygame.KEYDOWN:
+            key = pygame.key.name(event.key)  # Returns the string id of the pressed key.
+
+            if len(key) == 1 and len(player_name) < 3: # This covers all letters and numbers not on numpad.
+                if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
+                    player_name += key.upper()
+
+                else:
+                    player_name += key
+
+            elif key == "backspace":
+                player_name = player_name[:len(player_name) - 1]
+
+            elif event.key == pygame.K_RETURN and len(player_name) == 3:  # Finished typing.
+                break
+
+        player_name_text_object_and_location = create_text_object \
+            (player_name, [screen_width // 2 + 100, screen_height - 150], Red)
+
+        time_passed = pygame.time.get_ticks()
+        if time_passed - time_start > 500 and not display_player_name:
+            time_start = pygame.time.get_ticks()
+            time_passed = pygame.time.get_ticks()
+            display_player_name = True
+
+        if time_passed - time_start > 500 and display_player_name:
+            time_start = pygame.time.get_ticks()
+            time_passed = pygame.time.get_ticks()
+            display_player_name = False
+
+        # Draw the game.
+        screen.blit(high_score_image, [0, 0])
+
+        if display_player_name:
+            print_text_to_screen(high_score_directions_text_object_and_location[0],
+                                 high_score_directions_text_object_and_location[1])
+            print_text_to_screen(player_name_text_object_and_location[0],
+                                 player_name_text_object_and_location[1])
+        print_text_to_screen(high_score_text_object_and_location[0],
+                             high_score_text_object_and_location[1])
+        print_text_to_screen(high_score_1_text_object_and_location[0],
+                             high_score_1_text_object_and_location[1])
+        print_text_to_screen(high_score_2_text_object_and_location[0],
+                             high_score_2_text_object_and_location[1])
+        print_text_to_screen(high_score_3_text_object_and_location[0],
+                             high_score_3_text_object_and_location[1])
+
+        all_sprites.draw(screen)
+        pygame.display.flip()
+        clock.tick(FPS)
+
 
 # -------------------Main game loop.-----------------------------
+pygame.mixer.music.stop()  # Stops the music.
+pygame.mixer.music.load("sounds/Music/TheLoomingBattle.OGG")
+pygame.mixer.music.play(-1)
 
 while not done:
-    # Print Actual FPS for test purposes.
-    print(clock.get_fps())
+
     # Get user inputs.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -531,7 +740,6 @@ while not done:
             if event.key == pygame.K_SPACE:
                 taco_monster.shoot()
     get_player_input()
-
 
     # Update game state.
     taco_monster.update_taco()
@@ -552,7 +760,8 @@ while not done:
     for sushi in sushi_list:
         sushi.update_sushi()
 
-
+    # Set min and max fps variables.
+    update_FPS_min_and_max()
 
     # Create new tacos if the number of tacos on screen is less than the taco limit.
     if len(taco_list) < taco_limit:
@@ -566,7 +775,8 @@ while not done:
         animation = Animation(yumm_animation, taco_monster.rect.right, taco_monster.rect.top)
         animation_list.add(animation)
         all_sprites.add(animation)
-        taco_monster.score +=1
+        taco_monster.score += 1
+        hit_taco_sound.play() # Play sound when taco monster hits taco
 
     # Detect collisions between taco_monster and hot sauce bottles. If collision is detected delete the bottle
     # and update the taco_monster to have shoot enabled.
@@ -579,6 +789,7 @@ while not done:
         animation = Animation(pepper_animation, taco_monster.rect.right - 100, taco_monster.rect.y)
         animation_list.add(animation)
         all_sprites.add(animation)
+        hit_hot_sauce_sound.play() # Play sound when taco monster hits hot sauce
 
     # Detect collisions between bullets and sushi. If collision is detected delete the sushi and bullet
     # then play splat animation.
@@ -590,6 +801,8 @@ while not done:
             animation = Animation(splat_animation, bullet.rect.x, bullet.rect.y)
             animation_list.add(animation)
             all_sprites.add(animation)
+            hit_sushi_sound.play()  # Play sound when taco monster hits sushi
+
 
     # Detect collisions between taco_monster and sushi. Delete sushi when collision
     #  detected and decrease taco_monster health. Also, we want to play an animation at the location of collision.
@@ -599,7 +812,7 @@ while not done:
         animation_list.add(animation)
         all_sprites.add(animation)
         taco_monster.health -= sushi_damage
-
+        hit_sushi_sound.play()  # Play sound when taco monster hits sushi
 
     # Check to see if taco_monster has shooting enabled. If it is enabled
     # this checks the time passes and disables shooter after time limit reached.
@@ -612,7 +825,11 @@ while not done:
 
     # Check to see if background image needs to be updated, this is based off of tacos_until_new_background.
     if taco_monster.health <= 0:
-        game_over_load = True
+        new_high_score = check_highscore(taco_monster.score + taco_monster.sushi_killed, player_name)
+        if new_high_score:
+            game_over_and_new_high_score_load = True
+        else:
+            game_over_load = True
         done = True
 
     if taco_monster.score == tacos_until_new_background and level_number != 1:
@@ -631,7 +848,12 @@ while not done:
         update_level_settings(5)
 
     elif taco_monster.score == 6 * tacos_until_new_background and level_number != 6:
-        game_won_load = True
+        new_high_score = check_highscore(taco_monster.score + taco_monster.sushi_killed, player_name)
+        if new_high_score:
+            new_high_score_load = True
+        else:
+            game_won_load = True
+
         done = True
 
 
@@ -655,9 +877,17 @@ while game_over_load:
     final_score_text_object_and_location = create_text_object ("FINAL SCORE: " +
     str(taco_monster.sushi_killed + taco_monster.score), [screen_width // 2 - 120, screen_height - 100])
 
+    max_fps_text_object_and_location = create_text_object("MAX FPS: " + str(Max_FPS), [0, 0])
+
+    min_fps_text_object_and_location = create_text_object("MIN FPS: " + str(Min_FPS), [0, 60])
+
     # Delete sprites from game.
 
     destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation = True, bullet = True)
+
+    pygame.mixer.music.stop()  # Stops the music.
+    pygame.mixer.music.load("sounds/Music/Icy Game Over.mp3")
+    pygame.mixer.music.play(1)
 
     game_over_load = False
     game_over = True
@@ -675,6 +905,75 @@ while game_over_load:
         print_text_to_screen(final_taco_text_object_and_location[0], final_taco_text_object_and_location[1])
         print_text_to_screen(final_sushi_text_object_and_location[0], final_sushi_text_object_and_location[1])
         print_text_to_screen(final_score_text_object_and_location[0], final_score_text_object_and_location[1])
+        print_text_to_screen(max_fps_text_object_and_location[0], max_fps_text_object_and_location[1])
+        print_text_to_screen(min_fps_text_object_and_location[0], min_fps_text_object_and_location[1])
+
+        all_sprites.draw(screen)
+        pygame.display.flip()
+        clock.tick(FPS)
+
+while game_over_and_new_high_score_load:
+
+    # Load high score text objects.
+    score_1 = get_highscore(1)
+    score_2 = get_highscore(2)
+    score_3 = get_highscore(3)
+
+    high_score_1_text_object_and_location = create_text_object(score_1[0] + " " + score_1[1],
+                                                               [screen_width // 2 - 50, screen_height - 400], Red2)
+    high_score_2_text_object_and_location = create_text_object(score_2[0] + " " + score_2[1],
+                                                               [screen_width // 2 - 50, screen_height - 340], Red2)
+    high_score_3_text_object_and_location = create_text_object(score_3[0] + " " + score_3[1],
+                                                               [screen_width // 2 - 50, screen_height - 280], Red2)
+
+    # Set timers to deal with blinking red outline.
+    outline_timer_start = 0
+    outline_timer_time_passed = 0
+    display_outline = False
+
+    # Delete sprites from game.
+
+    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
+
+    new_high_score_load = False
+    new_high_score = True
+
+    pygame.mixer.music.stop()  # Stops the music.
+    pygame.mixer.music.load("sounds/Music/Icy Game Over.mp3")
+    pygame.mixer.music.play(1)
+
+    while new_high_score:
+
+        # Update the outline_timer_time_passed.
+        outline_timer_time_passed = pygame.time.get_ticks()
+        if outline_timer_time_passed - outline_timer_start > 500 and not display_outline:
+            outline_timer_start = pygame.time.get_ticks()
+            outline_timer_time_passed = pygame.time.get_ticks()
+            display_outline = True
+
+        if outline_timer_time_passed - outline_timer_start > 500 and display_outline:
+            outline_timer_start = pygame.time.get_ticks()
+            outline_timer_time_passed = pygame.time.get_ticks()
+            display_outline = False
+
+        # Get user inputs.
+
+        event = pygame.event.poll()
+        keys = pygame.key.get_pressed()
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        # Draw the game.
+        screen.blit(game_over_and_high_score_image, [0, 0])
+        if display_outline:
+            screen.blit(outline_image, [245, 215])
+        print_text_to_screen(high_score_1_text_object_and_location[0],
+                             high_score_1_text_object_and_location[1])
+        print_text_to_screen(high_score_2_text_object_and_location[0],
+                             high_score_2_text_object_and_location[1])
+        print_text_to_screen(high_score_3_text_object_and_location[0],
+                             high_score_3_text_object_and_location[1])
 
         all_sprites.draw(screen)
         pygame.display.flip()
@@ -690,7 +989,11 @@ while game_won_load:
         ("SUSHI SCORE: " + str(taco_monster.sushi_killed), [screen_width // 2 - 120, screen_height // 2])
 
     final_score_text_object_and_location = create_text_object ("FINAL SCORE: " +
-    str(taco_monster.sushi_killed + taco_monster.score), [screen_width // 2 - 120, screen_height - 100])
+    str(taco_monster.sushi_killed + taco_monster.score), [screen_width // 2 - 120, screen_height - 250], Red2)
+
+    max_fps_text_object_and_location = create_text_object("MAX FPS: " + str(Max_FPS), [0, 0])
+
+    min_fps_text_object_and_location = create_text_object("MIN FPS: " + str(Min_FPS), [0, 60])
 
     # Delete sprites from game.
 
@@ -698,6 +1001,10 @@ while game_won_load:
 
     game_won_load = False
     game_won = True
+
+    pygame.mixer.music.stop()  # Stops the music.
+    pygame.mixer.music.load("sounds/Music/Icy Game Over.mp3")
+    pygame.mixer.music.play(1)
 
     while game_won:
 
@@ -712,6 +1019,77 @@ while game_won_load:
         print_text_to_screen(final_taco_text_object_and_location[0], final_taco_text_object_and_location[1])
         print_text_to_screen(final_sushi_text_object_and_location[0], final_sushi_text_object_and_location[1])
         print_text_to_screen(final_score_text_object_and_location[0], final_score_text_object_and_location[1])
+        print_text_to_screen(max_fps_text_object_and_location[0], max_fps_text_object_and_location[1])
+        print_text_to_screen(min_fps_text_object_and_location[0], min_fps_text_object_and_location[1])
+
+        all_sprites.draw(screen)
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
+
+while new_high_score_load:
+
+    # Load high score text objects.
+    score_1 = get_highscore(1)
+    score_2 = get_highscore(2)
+    score_3 = get_highscore(3)
+
+    high_score_1_text_object_and_location = create_text_object(score_1[0] + " " + score_1[1],
+                                                               [screen_width // 2 - 50, screen_height - 400], Red2)
+    high_score_2_text_object_and_location = create_text_object(score_2[0] + " " + score_2[1],
+                                                               [screen_width // 2 - 50, screen_height - 340], Red2)
+    high_score_3_text_object_and_location = create_text_object(score_3[0] + " " + score_3[1],
+                                                               [screen_width // 2 - 50, screen_height - 280], Red2)
+
+    # Set timers to deal with blinking red outline.
+    outline_timer_start = 0
+    outline_timer_time_passed = 0
+    display_outline = False
+
+    # Delete sprites from game.
+
+    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
+
+    new_high_score_load = False
+    new_high_score = True
+
+    pygame.mixer.music.stop()  # Stops the music.
+    pygame.mixer.music.load("sounds/Music/high_score.mp3")
+    pygame.mixer.music.play(1)
+
+    while new_high_score:
+
+        # Update the outline_timer_time_passed.
+        outline_timer_time_passed = pygame.time.get_ticks()
+        if outline_timer_time_passed - outline_timer_start > 500 and not display_outline:
+            outline_timer_start = pygame.time.get_ticks()
+            outline_timer_time_passed = pygame.time.get_ticks()
+            display_outline = True
+
+        if outline_timer_time_passed - outline_timer_start > 500 and display_outline:
+            outline_timer_start = pygame.time.get_ticks()
+            outline_timer_time_passed = pygame.time.get_ticks()
+            display_outline = False
+
+        # Get user inputs.
+
+        event = pygame.event.poll()
+        keys = pygame.key.get_pressed()
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        # Draw the game.
+        screen.blit(new_high_score_congratulations_image, [0, 0])
+        if display_outline:
+            screen.blit(outline_image, [245, 215])
+        print_text_to_screen(high_score_1_text_object_and_location[0],
+                             high_score_1_text_object_and_location[1])
+        print_text_to_screen(high_score_2_text_object_and_location[0],
+                             high_score_2_text_object_and_location[1])
+        print_text_to_screen(high_score_3_text_object_and_location[0],
+                             high_score_3_text_object_and_location[1])
 
         all_sprites.draw(screen)
         pygame.display.flip()

@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f3fe1026-1841-4e41-afe4-43d807d9f2ef" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/Variables.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_over_screen/Congratulations.png" beforeDir="false" afterPath="$PROJECT_DIR$/game_over_screen/Congratulations.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_over_screen/Game_Over.png" beforeDir="false" afterPath="$PROJECT_DIR$/game_over_screen/Game_Over.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intro_images/Congratulations.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/Congratulations.xcf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intro_images/Game_Over.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/Game_Over.xcf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intro_images/IntroScreen.png" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/IntroScreen.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/intro_images/IntroScreen.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/IntroScreen.xcf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,6 +33,7 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="TEXT" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>

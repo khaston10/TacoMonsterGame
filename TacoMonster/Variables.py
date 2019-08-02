@@ -1,6 +1,7 @@
 # Colors
 Black = (0, 0, 0)
 Red = (255, 0, 0)
+Red2 = (183, 44, 25)
 Green = (0, 255, 0)
 Blue = (0, 0, 255)
 Yellow = (255, 255, 0)
@@ -12,6 +13,8 @@ White = (255, 255, 255)
 screen_width = 1000
 screen_height = 800
 FPS = 25 # Frames per second
+Min_FPS = FPS
+Max_FPS = FPS
 screen_size = (screen_width, screen_height)
 length_of_splash_screen = 3000 # 3 seconds
 length_of_intro_screen = 5000 # 5 seconds
@@ -20,19 +23,26 @@ level_number = 0  # Used to streamline the background update.
 game_over = False
 game_over_load = False
 game_won_load = False
+game_over_and_new_high_score = False
+game_over_and_new_high_score_load = False
 game_won = False
+high_score_load = True
+high_score = False
+new_high_score_load = False
+new_high_score = False
+player_name = ""
 
 # Variables for Taco Monster.
 taco_monster_speed = 20
 shooter_time = 5000 # 5 seconds
 
 # Variables for bullets.
-bullet_speed = 20
-bullet_limit = 5
+bullet_speed = 30
+bullet_limit = 8
 
 # Variables for Tacos.
-taco_limit = 2  # Limit for how many taco sprites can populate the screen.
-tacos_until_new_background = 2  # Required tacos to eat to update the background.
+taco_limit = 10  # Limit for how many taco sprites can populate the screen.
+tacos_until_new_background = 50  # Required tacos to eat to update the background.
 taco_speed_max = 10
 taco_speed_min = 2
 
@@ -45,7 +55,7 @@ hot_sauce_limit = 1
 max_number_of_sushi = 0
 sushi_speed_max = 20
 sushi_speed_min = 2
-sushi_damage = 50
+sushi_damage = 10
 
 
 # List of animations.

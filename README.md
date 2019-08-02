@@ -21,7 +21,5 @@ Pygame: Use Pip install
 * **Kevin Haston** - *Initial work* - [GitHubRepo](https://github.com/khaston10/TacoMonsterGame.git)
 If you contribute, please update this section and add yourself as an author.
 
-## Things on the to-do-list
-1. Life Icons need to be created and displayed to the screen. The taco_monster has an attribute lives_left. 
-2. Add music.
-3. Add sound effects.
+## Things on the to-do-list 
+
