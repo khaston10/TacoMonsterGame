@@ -19,7 +19,6 @@ background_image = pygame.image.load("background_images/bg_1.png")
 game_over_image = pygame.image.load(game_over_image_name[0])
 game_won_image = pygame.image.load("game_over_screen/game_won.png")
 high_score_image = pygame.image.load("Intro_images/IntroScreen.png")
-#new_high_score_image = pygame.image.load("Intro_images/NewHighScore.png")
 game_over_and_high_score_image = pygame.image.load("game_over_screen/Congratulations.png")
 new_high_score_congratulations_image = pygame.image.load("Intro_images/NewHighScoreCongratulations.png")
 outline_image = pygame.image.load("intro_images/OutLine.png")
@@ -32,7 +31,7 @@ hit_taco_sound = pygame.mixer.Sound('sounds/Wav/Hit_00.wav')
 hit_hot_sauce_sound = pygame.mixer.Sound('sounds/Wav/Pickup_00.wav')
 hit_sushi_sound = pygame.mixer.Sound('sounds/Wav/Hit_03.wav')
 shoot_sound = pygame.mixer.Sound('sounds/Wav/Shoot_01.wav')
-pygame.mixer.music.load("sounds/music/ScatterNoise1.mp3")
+pygame.mixer.music.load("sounds/music/Epic Intro.mp3")
 
 # Classes
 class Taco(pygame.sprite.Sprite):
@@ -283,6 +282,19 @@ def initialize_taco_sprites(taco_limit):
 
     return list_of_tacos
 
+def create_player():
+    """
+    Creates a player sprite.
+    :return: None
+    """
+    global taco_monster
+    taco_monster = TacoMonster()
+    taco_monster.rect.x = 60
+    taco_monster.rect.y = screen_height // 2 - 10
+
+    all_sprites.add(taco_monster)
+    player_list.add(taco_monster)
+
 def create_new_tacos():
     """
     This function will create new taco at random location to the right of screen.
@@ -426,12 +438,48 @@ def update_level_settings(level):
 
     # Delete sprites from game.
     destroy_sprites(taco=True, hot_sauce=True, sushi=True, bullet=False)
+    if level == 1:
+        level_number = level
+        taco_limit = 3
+        max_number_of_sushi = 2
+        hot_sauce_limit = 1
+        background_image = pygame.image.load(background_images[level_number])
 
-    taco_limit = level * 2
-    max_number_of_sushi = level * 2
-    hot_sauce_limit = level * 2
-    level_number = level
-    background_image = pygame.image.load(background_images[level_number])
+    elif level == 2:
+        level_number = level
+        taco_limit = 4
+        max_number_of_sushi = 4
+        hot_sauce_limit = 1
+        background_image = pygame.image.load(background_images[level_number])
+
+    elif level == 3:
+        level_number = level
+        taco_limit = 4
+        max_number_of_sushi = 6
+        hot_sauce_limit = 1
+        background_image = pygame.image.load(background_images[level_number])
+
+    elif level == 4:
+        level_number = level
+        taco_limit = 5
+        max_number_of_sushi = 8
+        hot_sauce_limit = 2
+        background_image = pygame.image.load(background_images[level_number])
+
+    elif level == 5:
+        level_number = level
+        taco_limit = 5
+        max_number_of_sushi = 10
+        hot_sauce_limit = 2
+        background_image = pygame.image.load(background_images[level_number])
+
+    elif level == 6:
+        level_number = level
+        taco_limit = 5
+        max_number_of_sushi = 12
+        hot_sauce_limit = 3
+        background_image = pygame.image.load(background_images[level_number])
+
 
 def initialize_sprite_settings():
     """
@@ -657,7 +705,7 @@ while high_score_load:
 
     # Delete sprites from game.
 
-    destroy_sprites(player=False, taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
+    destroy_sprites(player=True, taco=True, hot_sauce=True, sushi=True, animation=True, bullet=True)
 
     high_score_load = False
     high_score = True
@@ -729,6 +777,8 @@ pygame.mixer.music.stop()  # Stops the music.
 pygame.mixer.music.load("sounds/Music/TheLoomingBattle.OGG")
 pygame.mixer.music.play(-1)
 
+create_player()
+
 while not done:
 
     # Get user inputs.
@@ -772,11 +822,11 @@ while not done:
     #  detected and increase taco_monster score. Also, we want to play an animation at the location of collision.
     hit_list = pygame.sprite.spritecollide(taco_monster, taco_list, True)
     for hit in hit_list:
-        animation = Animation(yumm_animation, taco_monster.rect.right, taco_monster.rect.top)
+        animation = Animation(yumm_animation, taco_monster.rect.x, taco_monster.rect.y)
         animation_list.add(animation)
         all_sprites.add(animation)
         taco_monster.score += 1
-        hit_taco_sound.play() # Play sound when taco monster hits taco
+        hit_taco_sound.play()  # Play sound when taco monster hits taco
 
     # Detect collisions between taco_monster and hot sauce bottles. If collision is detected delete the bottle
     # and update the taco_monster to have shoot enabled.
@@ -808,7 +858,7 @@ while not done:
     #  detected and decrease taco_monster health. Also, we want to play an animation at the location of collision.
     sushi_hit_list = pygame.sprite.spritecollide(taco_monster, sushi_list, True)
     for hit in sushi_hit_list:
-        animation = Animation(yuck_animation, taco_monster.rect.right, taco_monster.rect.top)
+        animation = Animation(yuck_animation, taco_monster.rect.x, taco_monster.rect.y)
         animation_list.add(animation)
         all_sprites.add(animation)
         taco_monster.health -= sushi_damage
@@ -1025,8 +1075,6 @@ while game_won_load:
         all_sprites.draw(screen)
         pygame.display.flip()
         clock.tick(FPS)
-
-
 
 while new_high_score_load:
 

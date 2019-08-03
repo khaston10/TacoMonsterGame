@@ -5,13 +5,18 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Variables.py" beforeDir="false" afterPath="$PROJECT_DIR$/Variables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game_over_screen/Congratulations.png" beforeDir="false" afterPath="$PROJECT_DIR$/game_over_screen/Congratulations.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game_over_screen/Game_Over.png" beforeDir="false" afterPath="$PROJECT_DIR$/game_over_screen/Game_Over.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intro_images/Congratulations.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/Congratulations.xcf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/intro_images/Game_Over.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/Game_Over.xcf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/high_score.txt" beforeDir="false" afterPath="$PROJECT_DIR$/high_score.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/intro_images/IntroScreen.png" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/IntroScreen.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/intro_images/IntroScreen.xcf" beforeDir="false" afterPath="$PROJECT_DIR$/intro_images/IntroScreen.xcf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_10.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_11.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_12.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprite_images/splat/splat_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprite_images/splat/splat_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprite_images/splat/splat_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprite_images/splat/splat_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprite_images/splat/splat_8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprite_images/splat/splat_9.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
