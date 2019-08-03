@@ -42,9 +42,9 @@ bullet_limit = 8
 
 # Variables for Tacos.
 taco_limit = 2  # Limit for how many taco sprites can populate the screen.
-tacos_until_new_background = 100  # Required tacos to eat to update the background.
-taco_speed_max = 10
-taco_speed_min = 5
+tacos_until_new_background = 10  # Required tacos to eat to update the background.
+taco_speed_max = 30
+taco_speed_min = 10
 
 # Setting for hot_sauce.
 hot_sauce_speed_max = 10
